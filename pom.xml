@@ -6,7 +6,11 @@
 
     <groupId>com.xrq.shiro</groupId>
     <artifactId>shiro-demo</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>shiro-test</module>
+    </modules>
 
 
 </project>
