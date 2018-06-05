@@ -24,10 +24,13 @@ public class IniRealmTest {
         UsernamePasswordToken token =new UsernamePasswordToken("xrq","123");
         subject.login(token);
 
-        System.out.println("isAuthenticated:"+subject.isAuthenticated());
+        /*System.out.println("isAuthenticated:"+subject.isAuthenticated());
 
-        subject.checkRole("admin");
-        subject.checkRoles("admin","user");
+     */   subject.checkRole("admin");
+
+        subject.checkPermission("user:delete");
+        /*subject.checkRole("admin");
+        subject.checkRoles("admin","user");*/
 
         /*subject.logout();
 
