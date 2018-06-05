@@ -5,11 +5,14 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class CustomRealm extends AuthorizingRealm
 {
@@ -17,15 +20,45 @@ public class CustomRealm extends AuthorizingRealm
     Map<String,String> userMap=new HashMap<String, String>(16);
 
     {
-
+        super.setName("CustomRealm");
         userMap.put("xrq","2123");
     }
-
-
-   //授权
+                                         //授权
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        return null;
+        String userName=(String)principals.getPrimaryPrincipal();
+        // 从数据库或者缓存 中 获取 角色数据
+        Set<String> roles= getRolesByUserName(userName);
+        Set<String> permissions= getPermissionsByUserName(userName);
+        SimpleAuthorizationInfo simpleAuthorizationInfo=new SimpleAuthorizationInfo();
+        simpleAuthorizationInfo.setStringPermissions(permissions);
+        simpleAuthorizationInfo.setRoles(roles);
+        return simpleAuthorizationInfo;
     }
+
+    private Set<String> getPermissionsByUserName(String userName) {
+        Set<String> set=new HashSet<String>();
+        set.add("user:delete");
+        set.add("user:add");
+        return set;
+
+    }
+
+    private Set<String> getRolesByUserName(String userName) {
+        Set<String> set=new HashSet<String>();
+        set.add("admin");
+        set.add("user");
+        return set;
+    }
+
+
+
+
+
+
+
+
+
+
     //认证
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         //从主体传过来的认证信息中 获得用户名
@@ -37,9 +70,7 @@ public class CustomRealm extends AuthorizingRealm
             return null;
         }
         SimpleAuthenticationInfo simpleAuthenticationInfo=new SimpleAuthenticationInfo("xrq",password,"CustomRealm");
-
-
-        return null;
+        return simpleAuthenticationInfo;
     }
 
     private String getPasswordByUserName(String userName) {
