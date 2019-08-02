@@ -23,7 +23,23 @@ public class CustomRealm extends AuthorizingRealm
         super.setName("CustomRealm");
         userMap.put("xrq","2123");
     }
-                                         //授权
+
+    //认证(用户名密码)
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+        //从主体传过来的认证信息中 获得用户名
+        String userName=(String)token.getPrincipal();
+
+        String password=getPasswordByUserName(userName);
+        if(password==null)
+        {
+            return null;
+        }
+
+        //这个simpleAuthenticationInfo 对象是模拟查到的结果，在这里表示查到了
+        SimpleAuthenticationInfo simpleAuthenticationInfo=new SimpleAuthenticationInfo("xrq",password,"CustomRealm");
+        return simpleAuthenticationInfo;
+    }
+                                         //授权 (此用户拥有哪些权限)
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         String userName=(String)principals.getPrimaryPrincipal();
         // 从数据库或者缓存 中 获取 角色数据
@@ -48,29 +64,6 @@ public class CustomRealm extends AuthorizingRealm
         set.add("admin");
         set.add("user");
         return set;
-    }
-
-
-
-
-
-
-
-
-
-
-    //认证
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-        //从主体传过来的认证信息中 获得用户名
-        String userName=(String)token.getPrincipal();
-
-        String password=getPasswordByUserName(userName);
-        if(password==null)
-        {
-            return null;
-        }
-        SimpleAuthenticationInfo simpleAuthenticationInfo=new SimpleAuthenticationInfo("xrq",password,"CustomRealm");
-        return simpleAuthenticationInfo;
     }
 
     private String getPasswordByUserName(String userName) {

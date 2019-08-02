@@ -39,6 +39,7 @@ public class JdbcRealmTest {
         Subject subject= SecurityUtils.getSubject();
 
         UsernamePasswordToken token =new UsernamePasswordToken("xrq","123");
+        System.out.println("要开始loign");
         subject.login(token);
 
         System.out.println("isAuthenticated:"+subject.isAuthenticated());
